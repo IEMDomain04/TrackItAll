@@ -3,5 +3,6 @@
 @tailwind utilities;
 
 body {
-  background: rgb(54, 13, 54);
+  background: #F8F9FA;
+  color: #343A40;
 }

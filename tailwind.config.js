@@ -9,7 +9,17 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        HeaderRowColor: '#626E7A',
+        AddColor: '#007BFF',
+      },
+      fontSize: {
+        h1: '30px',
+        h2: '20px',
+        small: '12px'
+      }
+    },
   },
   plugins: [],
 }

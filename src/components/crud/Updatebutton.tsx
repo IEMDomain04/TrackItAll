@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Addbutton = () => {
+const Updatebutton = () => {
   return (
     <div>
       
@@ -8,4 +8,4 @@ const Addbutton = () => {
   )
 }
 
-export default Addbutton
+export default Updatebutton

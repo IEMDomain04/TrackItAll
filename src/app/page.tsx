@@ -1,10 +1,8 @@
-import Searchbar from "@/components/Searchbar";
 import TopNav from "./Section/TopNav";
-import Addbutton from "@/components/Addbutton";
-import Removebutton from "@/components/Removebutton";
-import Filterbutton from "@/components/Filterbutton";
-import DataTable from "@/components/DataTable";
-import DataRows from "@/components/DataRows";
+import Searchbar from "@/components/crud/Searchbar";
+import Addbutton from "@/components/crud/Addbutton";
+import Removebutton from "@/components/crud/Removebutton"
+import InputForm from "@/components/validation/InputForm";
 
 export default function Home() {
   return (
@@ -12,18 +10,12 @@ export default function Home() {
       <section>
         <TopNav />
 
-        <section>
-          <div>
-            <Searchbar />
-            <Addbutton />
-            <Removebutton />
-          </div>
-
-          <Filterbutton />
+        <section className="flex space-x-8 items-center pt-10 pl-10">
+          <Searchbar />
+          <Addbutton />
+          <Removebutton />
         </section>
-
-        <DataTable />
-        <DataRows />
+        
       </section>
     </main>
   );
