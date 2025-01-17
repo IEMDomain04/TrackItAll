@@ -1,11 +1,21 @@
-import React from 'react'
+import React from 'react';
 
-const Addbutton = () => {
-  return (
-    <div>
-      <button className='px-8 py-2 rounded-xl bg-AddColor text-white hover:bg-blue-600 active:bg-blue-800' type="button">Add new product</button>
-    </div>
-  )
+interface AddbuttonProps {
+  showInput: () => void; // Function with no parameters and no return value
 }
 
-export default Addbutton
+const Addbutton: React.FC<AddbuttonProps> = ({ showInput }) => {
+  return (
+    <div>
+      <button
+        className="px-8 py-2 rounded-xl bg-AddColor text-white hover:bg-blue-600 active:bg-blue-800"
+        type="button"
+        onClick={showInput}
+      >
+        Add new product
+      </button>
+    </div>
+  );
+};
+
+export default Addbutton;
