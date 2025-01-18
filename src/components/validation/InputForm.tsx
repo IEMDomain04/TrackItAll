@@ -45,14 +45,12 @@ const InputForm: React.FC<InputFormProps> = ({ closeInput, setMessage, initialDa
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      if (initialData && initialData.id) {
-        await onSubmit(formData);
-      } else {
-        const docRef = await addDoc(collection(db, "products"), formData);
+      await onSubmit(formData);
+      if (!initialData) {
         setMessage("Product added successfully!");
-        closeInput();
-        console.log("Document written with ID: ", docRef.id);
+        console.log("Document written with ID: ", formData.id);
       }
+      closeInput();
     } catch (e) {
       setMessage("Error adding/updating product. Please try again.");
       console.error("Error adding/updating document: ", e);

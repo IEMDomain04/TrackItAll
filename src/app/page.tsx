@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, deleteDoc, doc, updateDoc, addDoc } from "firebase/firestore";
+import { collection, onSnapshot, deleteDoc, doc, updateDoc, addDoc, DocumentData } from "firebase/firestore";
 import { db } from '../database/firebaseConfig';
 import TopNav from "./Section/TopNav";
 import Searchbar from "@/components/crud/Searchbar";
@@ -9,12 +9,21 @@ import Removebutton from "@/components/crud/Removebutton";
 import InputForm from "@/components/validation/InputForm";
 import DataTable from '@/components/Table/DataTable';
 
+type Product = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  dateAdded: string;
+};
+
 export default function Home() {
   const [showInputForm, setShowInputForm] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleAddButtonClick = () => {
@@ -33,7 +42,7 @@ export default function Home() {
       const productsList = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      }));
+      }) as Product);
       setProducts(productsList);
     });
 
@@ -60,16 +69,16 @@ export default function Home() {
     }
   };
 
-  const handleUpdateClick = (product: any) => {
+  const handleUpdateClick = (product: Product) => {
     setSelectedProduct(product);
     setShowInputForm(true);
   };
 
-  const handleFormSubmit = async (formData: any) => {
+  const handleFormSubmit = async (formData: Partial<Product>) => {
     try {
       if (selectedProduct) {
         const docRef = doc(db, "products", selectedProduct.id);
-        await updateDoc(docRef, formData);
+        await updateDoc(docRef, formData as DocumentData);
         setMessage("Product updated successfully!");
       } else {
         const docRef = await addDoc(collection(db, "products"), formData);
