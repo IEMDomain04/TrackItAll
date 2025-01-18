@@ -1,21 +1,30 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 import { db } from '../../database/firebaseConfig';
+
+interface Product {
+  id?: string;
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  dateAdded: string;
+}
 
 interface InputFormProps {
   closeInput: () => void;
   setMessage: (message: string) => void;
-  initialData?: any;
-  onSubmit: (formData: any) => void; // Ensure to keep this prop for update functionality
+  initialData?: Product;
+  onSubmit: (formData: Product) => void;
 }
 
 const InputForm: React.FC<InputFormProps> = ({ closeInput, setMessage, initialData, onSubmit }) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Product>({
     name: '',
     description: '',
-    price: '',
-    quantity: '',
+    price: 0,
+    quantity: 0,
     dateAdded: '',
   });
 
@@ -25,8 +34,7 @@ const InputForm: React.FC<InputFormProps> = ({ closeInput, setMessage, initialDa
     }
   }, [initialData]);
 
-  // Handle input change
-  const handleChange = (e: { target: { name: any; value: any; }; }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -34,16 +42,15 @@ const InputForm: React.FC<InputFormProps> = ({ closeInput, setMessage, initialDa
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       if (initialData && initialData.id) {
-        await onSubmit(formData); // Call the onSubmit prop for updates
+        await onSubmit(formData);
       } else {
         const docRef = await addDoc(collection(db, "products"), formData);
         setMessage("Product added successfully!");
-        closeInput(); // Close the input box
+        closeInput();
         console.log("Document written with ID: ", docRef.id);
       }
     } catch (e) {
@@ -57,7 +64,6 @@ const InputForm: React.FC<InputFormProps> = ({ closeInput, setMessage, initialDa
       <div className="bg-white p-6 rounded-xl shadow-lg w-96">
         <h2 className="text-xl font-bold mb-4">{initialData ? "Edit Product" : "Add New Product"}</h2>
         <form onSubmit={handleSubmit}>
-          {/* Form fields */}
           <div className="mb-4">
             <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
             <input

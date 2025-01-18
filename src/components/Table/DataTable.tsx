@@ -1,12 +1,21 @@
 import React from 'react';
 import Updatebutton from '../crud/Updatebutton';
 
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  dateAdded: string;
+}
+
 interface DataTableProps {
-  products: any[];
+  products: Product[];
   selectedProducts: string[];
   handleCheckboxChange: (id: string) => void;
-  handleUpdateClick: (product: any) => void;
-  searchQuery: string; // Add searchQuery prop
+  handleUpdateClick: (product: Product) => void;
+  searchQuery: string;
 }
 
 const DataTable: React.FC<DataTableProps> = ({ products, selectedProducts, handleCheckboxChange, handleUpdateClick, searchQuery }) => {
