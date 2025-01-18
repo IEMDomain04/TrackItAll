@@ -111,7 +111,7 @@ export default function Home() {
           <Addbutton showInput={handleAddButtonClick} />
           <Removebutton handleRemoveSelected={handleRemoveSelected} isDisabled={selectedProducts.length === 0} />
           {message && (
-            <div className={`${message.includes("successfully") ? "w-fit py-2 px-20 text-center bg-green-200 text-green-800 border-green-400" : "w-fit py-2 px-20 bg-red-200 text-red-800 border-red-400"} border rounded`}>
+            <div className={`${message.includes("successfully") ? "w-fit py-2 px-20 text-center bg-green-200 text-green-800 border-green-400" : "w-fit py-2 px-20 bg-red-200 text-red-800 border-red-400"}`}>
               {message}
             </div>
           )}
