@@ -13,7 +13,7 @@ interface Product {
 interface InputFormProps {
   closeInput: () => void;
   setMessage: (message: string) => void;
-  initialData?: Product | null;  // Allow null
+  initialData?: Product | null;
   onSubmit: (formData: Product) => void;
 }
 
