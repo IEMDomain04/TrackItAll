@@ -38,15 +38,17 @@ export default function Home() {
 
   // Fetch products from Firestore
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
-      const productsList = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }) as Product);
-      setProducts(productsList);
-    });
+    if (typeof window !== 'undefined') {
+      const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
+        const productsList = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }) as Product);
+        setProducts(productsList);
+      });
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    }
   }, []);
 
   const handleCheckboxChange = (id: string) => {
