@@ -1,139 +1,141 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, deleteDoc, doc, updateDoc, addDoc, DocumentData } from "firebase/firestore";
-import { db } from '../database/firebaseConfig';
-import TopNav from "./Section/TopNav";
-import Searchbar from "@/components/crud/Searchbar";
-import Addbutton from "@/components/crud/Addbutton";
-import Removebutton from "@/components/crud/Removebutton";
-import InputForm from "@/components/validation/InputForm";
-import DataTable from '@/components/Table/DataTable';
 
-type Product = {
-  id: string;
+interface Product {
+  id?: string;
   name: string;
   description: string;
   price: number;
   quantity: number;
   dateAdded: string;
-};
+}
 
-export default function Home() {
-  const [showInputForm, setShowInputForm] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+interface InputFormProps {
+  closeInput: () => void;
+  setMessage: (message: string) => void;
+  initialData?: Product | null;  // Allow null
+  onSubmit: (formData: Product) => void;
+}
 
-  const handleAddButtonClick = () => {
-    setShowInputForm(true);
-    setSelectedProduct(null);
-  };
+const InputForm: React.FC<InputFormProps> = ({ closeInput, setMessage, initialData, onSubmit }) => {
+  const [formData, setFormData] = useState<Product>({
+    name: '',
+    description: '',
+    price: 0,
+    quantity: 0,
+    dateAdded: '',
+  });
 
-  const closeInputForm = () => {
-    setShowInputForm(false);
-    setSelectedProduct(null);
-  };
-
-  // Fetch products from Firestore
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
-      const productsList = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }) as Product);
-      setProducts(productsList);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const handleCheckboxChange = (id: string) => {
-    setSelectedProducts(prevSelected =>
-      prevSelected.includes(id)
-        ? prevSelected.filter(productId => productId !== id)
-        : [...prevSelected, id]
-    );
-  };
-
-  const handleRemoveSelected = async () => {
-    try {
-      const promises = selectedProducts.map(id => deleteDoc(doc(db, "products", id)));
-      await Promise.all(promises);
-      setSelectedProducts([]);
-      setMessage("Successfully removed selected products.");
-    } catch (e) {
-      const error = e as Error;
-      setMessage("Error removing selected products: " + error.message);
+    if (initialData) {
+      setFormData(initialData);
     }
+  }, [initialData]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleUpdateClick = (product: Product) => {
-    setSelectedProduct(product);
-    setShowInputForm(true);
-  };
-
-  const handleFormSubmit = async (formData: Partial<Product>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
-      if (selectedProduct) {
-        const docRef = doc(db, "products", selectedProduct.id);
-        await updateDoc(docRef, formData as DocumentData);
-        setMessage("Product updated successfully!");
-      } else {
-        const docRef = await addDoc(collection(db, "products"), formData);
+      await onSubmit(formData);
+      if (!initialData) {
         setMessage("Product added successfully!");
-        console.log("Document written with ID: ", docRef.id);
+        console.log("Document written with ID: ", formData.id);
       }
-      closeInputForm();
+      closeInput();
     } catch (e) {
       setMessage("Error adding/updating product. Please try again.");
       console.error("Error adding/updating document: ", e);
     }
   };
 
-  useEffect(() => {
-    if (message) {
-      const timer = setTimeout(() => {
-        setMessage(null);
-      }, 4000);
-      return () => clearTimeout(timer);
-    }
-  }, [message]);
-
   return (
-    <main>
-      <section>
-        <TopNav />
-
-        <section className="flex space-x-8 items-center pt-10 pl-10">
-          <Searchbar onSearch={setSearchQuery} />
-          <Addbutton showInput={handleAddButtonClick} />
-          <Removebutton handleRemoveSelected={handleRemoveSelected} isDisabled={selectedProducts.length === 0} />
-          {message && (
-            <div className={`${message.includes("successfully") ? "w-fit py-2 px-20 text-center bg-green-200 text-green-800 border-green-400" : "w-fit py-2 px-20 bg-red-200 text-red-800 border-red-400"} border rounded`}>
-              {message}
-            </div>
-          )}
-        </section>
-
-        {showInputForm && (
-          <InputForm
-            closeInput={closeInputForm}
-            setMessage={setMessage}
-            initialData={selectedProduct}
-            onSubmit={handleFormSubmit}
-          />
-        )}
-
-        <DataTable
-          products={products}
-          selectedProducts={selectedProducts}
-          handleCheckboxChange={handleCheckboxChange}
-          handleUpdateClick={handleUpdateClick}
-          searchQuery={searchQuery} // Pass search query to DataTable
-        />
-      </section>
-    </main>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white p-6 rounded-xl shadow-lg w-96">
+        <h2 className="text-xl font-bold mb-4">{initialData ? "Edit Product" : "Add New Product"}</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full border rounded-lg px-3 py-2"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="description" className="block text-sm font-medium mb-1">Description</label>
+            <input
+              type="text"
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              className="w-full border rounded-lg px-3 py-2"
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="price" className="block text-sm font-medium mb-1">Price</label>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              className="w-full border rounded-lg px-3 py-2"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="quantity" className="block text-sm font-medium mb-1">Quantity</label>
+            <input
+              type="number"
+              id="quantity"
+              name="quantity"
+              value={formData.quantity}
+              onChange={handleChange}
+              className="w-full border rounded-lg px-3 py-2"
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="dateAdded" className="block text-sm font-medium mb-1">Date Added</label>
+            <input
+              type="date"
+              id="dateAdded"
+              name="dateAdded"
+              value={formData.dateAdded}
+              onChange={handleChange}
+              className="w-full border rounded-lg px-3 py-2"
+            />
+          </div>
+          <div className="flex justify-end space-x-3">
+            <button
+              type="button"
+              className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+              onClick={closeInput}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
-}
+};
+
+export default InputForm;
