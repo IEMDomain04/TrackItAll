@@ -1,11 +1,16 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
+import { db } from '../../database/firebaseConfig';
 
 interface InputFormProps {
   closeInput: () => void;
+  setMessage: (message: string) => void;
+  initialData?: any;
+  onSubmit: (formData: any) => void; // Ensure to keep this prop for update functionality
 }
 
-const InputForm: React.FC<InputFormProps> = ({ closeInput }) => {
+const InputForm: React.FC<InputFormProps> = ({ closeInput, setMessage, initialData, onSubmit }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -13,6 +18,12 @@ const InputForm: React.FC<InputFormProps> = ({ closeInput }) => {
     quantity: '',
     dateAdded: '',
   });
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
   // Handle input change
   const handleChange = (e: { target: { name: any; value: any; }; }) => {
@@ -23,11 +34,30 @@ const InputForm: React.FC<InputFormProps> = ({ closeInput }) => {
     }));
   };
 
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      if (initialData && initialData.id) {
+        await onSubmit(formData); // Call the onSubmit prop for updates
+      } else {
+        const docRef = await addDoc(collection(db, "products"), formData);
+        setMessage("Product added successfully!");
+        closeInput(); // Close the input box
+        console.log("Document written with ID: ", docRef.id);
+      }
+    } catch (e) {
+      setMessage("Error adding/updating product. Please try again.");
+      console.error("Error adding/updating document: ", e);
+    }
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-xl shadow-lg w-96">
-        <h2 className="text-xl font-bold mb-4">Add New Product</h2>
-        <form>
+        <h2 className="text-xl font-bold mb-4">{initialData ? "Edit Product" : "Add New Product"}</h2>
+        <form onSubmit={handleSubmit}>
+          {/* Form fields */}
           <div className="mb-4">
             <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
             <input
@@ -40,7 +70,6 @@ const InputForm: React.FC<InputFormProps> = ({ closeInput }) => {
               required
             />
           </div>
-
           <div className="mb-4">
             <label htmlFor="description" className="block text-sm font-medium mb-1">Description</label>
             <input
@@ -52,7 +81,6 @@ const InputForm: React.FC<InputFormProps> = ({ closeInput }) => {
               className="w-full border rounded-lg px-3 py-2"
             />
           </div>
-
           <div className="mb-4">
             <label htmlFor="price" className="block text-sm font-medium mb-1">Price</label>
             <input
@@ -65,7 +93,6 @@ const InputForm: React.FC<InputFormProps> = ({ closeInput }) => {
               required
             />
           </div>
-
           <div className="mb-4">
             <label htmlFor="quantity" className="block text-sm font-medium mb-1">Quantity</label>
             <input
@@ -77,7 +104,6 @@ const InputForm: React.FC<InputFormProps> = ({ closeInput }) => {
               className="w-full border rounded-lg px-3 py-2"
             />
           </div>
-
           <div className="mb-4">
             <label htmlFor="dateAdded" className="block text-sm font-medium mb-1">Date Added</label>
             <input
@@ -89,7 +115,6 @@ const InputForm: React.FC<InputFormProps> = ({ closeInput }) => {
               className="w-full border rounded-lg px-3 py-2"
             />
           </div>
-
           <div className="flex justify-end space-x-3">
             <button
               type="button"
