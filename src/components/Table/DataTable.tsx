@@ -53,7 +53,7 @@ const DataTable: React.FC<DataTableProps> = ({ products, selectedProducts, handl
               <td className="max-w-20 py-2 px-4 border-b border-l break-words">{product.price}</td>
               <td className="max-w-20 py-2 px-4 border-b border-l break-words">{product.quantity}</td>
               <td className="max-w-10 py-2 px-4 border-b border-l">{product.dateAdded}</td>
-              <td className="py-2 px-1 border-b border-l">
+              <td className="py-2 px-5 border-b border-l max-sm:px-0 max-sm:mx-5">
                 <Updatebutton onClick={() => handleUpdateClick(product)} />
               </td>
             </tr>
