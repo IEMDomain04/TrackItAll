@@ -108,12 +108,12 @@ export default function Home() {
       <section>
         <TopNav />
 
-        <section className="flex space-x-8 items-center pt-10 pl-10">
+        <section className="flex space-x-8 items-center pt-10 pl-10 max-sm:flex-col max-sm:space-y-5 max-sm:pl-0 max-sm:space-x-0">
           <Searchbar onSearch={setSearchQuery} />
           <Addbutton showInput={handleAddButtonClick} />
           <Removebutton handleRemoveSelected={handleRemoveSelected} isDisabled={selectedProducts.length === 0} />
           {message && (
-            <div className={`${message.includes("successfully") ? "w-fit py-2 px-20 text-center bg-green-200 text-green-800 border-green-400" : "w-fit py-2 px-20 bg-red-200 text-red-800 border-red-400"}`}>
+            <div className={`${message.includes("successfully") ? "w-fit py-2 px-20 text-center bg-green-200 text-green-800 border-green-400" : "w-fit py-2 px-20 text-center bg-red-200 text-red-800 border-red-400"}`}>
               {message}
             </div>
           )}

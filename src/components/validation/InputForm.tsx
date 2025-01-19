@@ -56,7 +56,7 @@ const InputForm: React.FC<InputFormProps> = ({ closeInput, setMessage, initialDa
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 max-sm:px-5">
       <div className="bg-white p-6 rounded-xl shadow-lg w-96">
         <h2 className="text-xl font-bold mb-4">{initialData ? "Edit Product" : "Add New Product"}</h2>
         <form onSubmit={handleSubmit}>

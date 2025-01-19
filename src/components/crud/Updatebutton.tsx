@@ -8,7 +8,7 @@ interface updateButtonProp {
 const Updatebutton: React.FC<updateButtonProp> = ({ onClick }) => {
   return (
     <div
-      className="flex p-1 rounded cursor-pointer hover:bg-slate-300 hover:scale-95 active:bg-slate-400"
+      className="flex justify-center p-1 rounded cursor-pointer hover:bg-slate-300 hover:scale-95 active:bg-slate-400"
       onClick={onClick}
     >
       <Image src="/edit-icon.svg" width={30} height={30} alt='Edit Icon' />

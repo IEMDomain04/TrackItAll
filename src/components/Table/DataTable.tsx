@@ -24,17 +24,17 @@ const DataTable: React.FC<DataTableProps> = ({ products, selectedProducts, handl
   );
 
   return (
-    <div className="p-4">
+    <div className="p-4 overflow-x-auto">
       <h2 className="text-2xl font-bold mb-4">Products</h2>
       <table className="min-w-full bg-white border">
         <thead>
           <tr>
             <th className="w-5 px-4 border-b"></th>
-            <th className="py-2 px-4 border-b border-l">Name</th>
-            <th className="py-2 px-4 border-b border-l">Description</th>
-            <th className="py-2 px-4 border-b border-l">Price</th>
-            <th className="py-2 px-4 border-b border-l">Quantity</th>
-            <th className="py-2 px-4 border-b border-l">Date Added</th>
+            <th className="py-2 px-4 border-b border-l max-sm:text-xs">Name</th>
+            <th className="py-2 px-4 border-b border-l max-sm:text-xs">Description</th>
+            <th className="py-2 px-4 border-b border-l max-sm:text-xs">Price</th>
+            <th className="py-2 px-4 border-b border-l max-sm:text-xs">Quantity</th>
+            <th className="py-2 px-4 border-b border-l max-sm:text-xs">Date Added</th>
             <th className="w-20 px-4 border-b border-l"></th>
           </tr>
         </thead>
@@ -48,12 +48,12 @@ const DataTable: React.FC<DataTableProps> = ({ products, selectedProducts, handl
                   onChange={() => handleCheckboxChange(product.id)}
                 />
               </td>
-              <td className="py-2 px-4 border-b border-l">{product.name}</td>
-              <td className="py-2 px-4 border-b border-l">{product.description}</td>
-              <td className="py-2 px-4 border-b border-l">{product.price}</td>
-              <td className="py-2 px-4 border-b border-l">{product.quantity}</td>
-              <td className="py-2 px-4 border-b border-l">{product.dateAdded}</td>
-              <td className="flex justify-center py-2 px-1 border-b border-l">
+              <td className="max-w-xs py-2 px-4 border-b border-l break-words">{product.name}</td>
+              <td className="max-w-xs py-2 px-4 border-b border-l break-words">{product.description}</td>
+              <td className="max-w-20 py-2 px-4 border-b border-l break-words">{product.price}</td>
+              <td className="max-w-20 py-2 px-4 border-b border-l break-words">{product.quantity}</td>
+              <td className="max-w-10 py-2 px-4 border-b border-l">{product.dateAdded}</td>
+              <td className="py-2 px-1 border-b border-l">
                 <Updatebutton onClick={() => handleUpdateClick(product)} />
               </td>
             </tr>
