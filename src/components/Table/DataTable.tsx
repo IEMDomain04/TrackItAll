@@ -19,9 +19,9 @@ interface DataTableProps {
 }
 
 const DataTable: React.FC<DataTableProps> = ({ products, selectedProducts, handleCheckboxChange, handleUpdateClick, searchQuery }) => {
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProducts = products
+    .filter(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div className="p-4 overflow-x-auto">
