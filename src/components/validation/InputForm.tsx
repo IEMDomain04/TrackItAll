@@ -1,6 +1,14 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 
+function addConfirm() {
+  return confirm("Do you really want to add this item?");
+}
+
+function editConfirm() {
+  return confirm("Do you really want to edit information for this item?");
+}
+
 interface Product {
   id?: string;
   name: string;
@@ -42,11 +50,17 @@ const InputForm: React.FC<InputFormProps> = ({ closeInput, setMessage, initialDa
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const confirmAction = initialData ? editConfirm() : addConfirm();
+    if (!confirmAction) {
+      return;
+    }
     try {
       await onSubmit(formData);
       if (!initialData) {
         setMessage("Product added successfully!");
         console.log("Document written with ID: ", formData.id);
+      } else {
+        setMessage("Product updated successfully!");
       }
       closeInput();
     } catch (e) {
